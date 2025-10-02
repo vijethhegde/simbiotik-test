@@ -1,0 +1,74 @@
+<div class="max-w-4xl mx-auto">
+<h2 class="text-2xl font-bold mb-4">TODO List</h2>
+ 
+  <button (click)="openForm()" class="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add TODO</button>
+ 
+  <div *ngIf="loading" class="text-blue-600 mb-4">Loading TODOs...</div>
+<div *ngIf="error" class="text-red-600 mb-4">{{ error }}</div>
+ 
+  <table *ngIf="!loading && todos.length > 0" class="w-full border-collapse border border-gray-300">
+<thead>
+<tr>
+<th class="border border-gray-300 p-2">Title</th>
+<th class="border border-gray-300 p-2">Completed</th>
+<th class="border border-gray-300 p-2">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let todo of todos">
+<td class="border border-gray-300 p-2 cursor-pointer hover:underline" (click)="viewTodo(todo)">
+          {{ todo.title }}
+</td>
+<td class="border border-gray-300 p-2 text-center">
+<input type="checkbox" [checked]="todo.completed" (change)="toggleComplete(todo)" />
+</td>
+<td class="border border-gray-300 p-2 space-x-2">
+<button (click)="editTodo(todo)" class="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Edit</button>
+<button (click)="deleteTodo(todo.id)" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">Delete</button>
+</td>
+</tr>
+</tbody>
+</table>
+ 
+  <p *ngIf="!loading && todos.length === 0" class="text-gray-600">No TODOs found. Add one!</p>
+ 
+  <!-- Form Modal -->
+<div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+<div class="bg-white p-6 rounded shadow w-96">
+<h3 class="text-xl font-bold mb-4">{{ editingTodo ? 'Edit TODO' : 'Add TODO' }}</h3>
+<form [formGroup]="todoForm" (ngSubmit)="submitForm()">
+<label class="block mb-2">Title</label>
+<input formControlName="title" class="border p-2 w-full mb-4" />
+<div *ngIf="todoForm.get('title')?.invalid && todoForm.get('title')?.touched" class="text-red-500 text-sm mb-2">
+          Title is required
+</div>
+ 
+        <label class="block mb-2">Description</label>
+<textarea formControlName="description" class="border p-2 w-full mb-4"></textarea>
+ 
+        <label class="inline-flex items-center mb-4">
+<input type="checkbox" formControlName="completed" class="mr-2" />
+          Completed
+</label>
+ 
+        <div class="flex justify-end space-x-2">
+<button type="button" (click)="closeForm()" class="px-4 py-2 border rounded hover:bg-gray-200">Cancel</button>
+<button type="submit" [disabled]="todoForm.invalid" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            {{ editingTodo ? 'Update' : 'Create' }}
+</button>
+</div>
+</form>
+</div>
+</div>
+ 
+  <!-- View Modal -->
+<div *ngIf="viewingTodo" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+<div class="bg-white p-6 rounded shadow w-96">
+<h3 class="text-xl font-bold mb-4">TODO Details</h3>
+<p><strong>Title:</strong> {{ viewingTodo.title }}</p>
+<p><strong>Description:</strong> {{ viewingTodo.description }}</p>
+<p><strong>Completed:</strong> {{ viewingTodo.completed ? 'Yes' : 'No' }}</p>
+<button (click)="closeView()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Close</button>
+</div>
+</div>
+</div>
