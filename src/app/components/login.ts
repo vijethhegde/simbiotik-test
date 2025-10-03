@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MATERIAL_IMPORTS } from '../shared/material.imports';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,9 @@ import { MATERIAL_IMPORTS } from '../shared/material.imports';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
+
+  private baseUrl = environment.apiUrl;
+
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +45,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.http.post<{ accessToken: string }>(
-      'users/login',
+      `${this.baseUrl}/users/login`,
       { username, password },
       { headers: { 'Content-Type': 'application/json' } }
     ).subscribe({
