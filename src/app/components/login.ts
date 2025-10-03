@@ -40,40 +40,44 @@ export class LoginComponent implements OnInit {
     const { username, password } = this.loginForm.value;
     this.loading = true;
 
-    this.http
-      .post<{ accessToken: string }>(
-        'api/users/login',
-        { username, password },
-        { headers: { 'Content-Type': 'application/json' } }
-      )
-      .subscribe({
-        next: (res) => {
-          this.loading = false;
-          if (res?.accessToken) {
-            localStorage.setItem('authToken', res.accessToken);
-            this.snackBar.open('Login successful!', '', {
-              duration: 3000,
-              panelClass: ['mat-toolbar', 'mat-primary'],
-            });
-
-            this.router.navigate(['/practice-tests']);
-          } else {
-            this.snackBar.open('Login failed: No token returned', '', {
-              duration: 3000,
-              panelClass: ['mat-toolbar', 'mat-success'],
-            });
+    this.http.post<{ accessToken: string }>(
+      'api/users/login',
+      { username, password },
+      { headers: { 'Content-Type': 'application/json' } }
+    ).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res?.accessToken) {
+          localStorage.setItem('authToken', res.accessToken);
+          this.snackBar.open('Login successful!', '', {
+            duration: 3000,
+            panelClass: ['bg-success', 'text-white'],
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom'
+          });
+          this.router.navigate(['/practice-tests']);
+        } else {
+          this.snackBar.open('Login failed: No token returned', '', {
+            duration: 3000,
+            panelClass: ['bg-warning', 'text-dark'],
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom'
+          });
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.snackBar.open(
+          `Login error: ${err?.error?.message || err.message || 'Unknown error'}`,
+          '',
+          {
+            duration: 3000,
+            panelClass: ['bg-danger', 'text-white'],
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom'
           }
-        },
-        error: (err) => {
-          this.loading = false;
-          this.snackBar.open(
-            `Login error: ${
-              err?.error?.message || err.message || 'Unknown error'
-            }`,
-            '',
-            { duration: 3000,panelClass: ['mat-toolbar', 'mat-warn'] }
-          );
-        },
-      });
+        );
+      }
+    });
   }
 }
