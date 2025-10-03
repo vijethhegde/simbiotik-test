@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.http.post<{ accessToken: string }>(
-      'api/users/login',
+      'users/login',
       { username, password },
       { headers: { 'Content-Type': 'application/json' } }
     ).subscribe({

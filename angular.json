@@ -94,6 +94,9 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css"
             ]
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
